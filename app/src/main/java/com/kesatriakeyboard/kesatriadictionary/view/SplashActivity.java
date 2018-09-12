@@ -83,7 +83,7 @@ public class SplashActivity extends AppCompatActivity {
                 indonesiaHelper.open();
                 indonesiaHelper.beginTransaction();
                 try {
-                    for (WordModel model : englishModels) {
+                    for (WordModel model : indonesiaModels) {
                         indonesiaHelper.insertTransaction(model);
                         progress += progressDiff;
                         publishProgress((int) progress);

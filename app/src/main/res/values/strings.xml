@@ -13,4 +13,6 @@
     <string name="app_first_run">app_first_run</string>
     <string name="en2id">English-Indonesia</string>
     <string name="id2en">Indonesia-English</string>
+    <string name="query_en_hint">Search word in english</string>
+    <string name="query_id_hint">Cari kata dalam bahasa indonesia</string>
 </resources>

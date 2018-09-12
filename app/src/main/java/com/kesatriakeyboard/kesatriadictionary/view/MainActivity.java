@@ -3,6 +3,7 @@ package com.kesatriakeyboard.kesatriadictionary.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -39,7 +40,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null) {
-            // TODO: get first fragment
+            getSupportActionBar().setTitle(getString(R.string.en2id));
+            Fragment currentFragment = new EnglishFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_main, currentFragment)
+                    .commit();
         }
     }
 
@@ -55,17 +61,26 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
+        String title = "";
+        Fragment fragment = null;
+
         int id = item.getItemId();
         switch (id) {
             case R.id.en2id:
-                // TODO: switcth to EnglishFragment
+                title = getString(R.string.en2id);
+                fragment = EnglishFragment.newInstance();
                 break;
             case R.id.id2en:
-                // TODO: switcth to IndonesiaFragment
+                title = getString(R.string.id2en);
+                fragment = IndonesiaFragment.newInstance();
                 break;
         }
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_main, fragment)
+                .commit();
+        toolbar.setTitle(title);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

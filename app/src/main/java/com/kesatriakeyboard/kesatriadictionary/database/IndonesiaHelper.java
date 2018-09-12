@@ -57,7 +57,7 @@ public class IndonesiaHelper {
     }
 
     public ArrayList<WordModel> getDataByName(String query) {
-        Cursor cursor = db.query(TABLE_INDONESIA, null, WORD + " LIKE ?", new String[]{query}, null, null, _ID + " ASC", null);
+        Cursor cursor = db.query(TABLE_INDONESIA, null, WORD + " LIKE ?", new String[]{query + "%"}, null, null, _ID + " ASC", "10");
         cursor.moveToFirst();
         ArrayList<WordModel> arrayList = new ArrayList<>();
         WordModel model;
