@@ -1,6 +1,7 @@
 package com.kesatriakeyboard.kesatriadictionary.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -23,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 
-public class EnglishFragment extends Fragment {
+public class EnglishFragment extends Fragment implements WordAdapter.OnItemClickListener {
 
     @BindView(R.id.rv_word)
     RecyclerView rvWord;
@@ -49,7 +50,7 @@ public class EnglishFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         context = getActivity();
-        adapter = new WordAdapter(context);
+        adapter = new WordAdapter(context, this);
         rvWord.setLayoutManager(new LinearLayoutManager(context));
         rvWord.setAdapter(adapter);
         loading = false;
@@ -69,6 +70,14 @@ public class EnglishFragment extends Fragment {
                 new LoadWords().execute(query);
             }
         }
+    }
+
+    @Override
+    public void onItemClick(WordModel model) {
+        Intent i = new Intent(getActivity(), DetailActivity.class);
+        i.putExtra("source", "english");
+        i.putExtra("model", model);
+        startActivity(i);
     }
 
     private class LoadWords extends AsyncTask<String, Void, ArrayList<WordModel>> {

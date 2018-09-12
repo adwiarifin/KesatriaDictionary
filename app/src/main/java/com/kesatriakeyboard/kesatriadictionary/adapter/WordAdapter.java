@@ -18,10 +18,12 @@ import butterknife.ButterKnife;
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder> {
 
     private ArrayList<WordModel> mData = new ArrayList<>();
+    private final OnItemClickListener listener;
     private Context context;
 
-    public WordAdapter(Context context) {
+    public WordAdapter(Context context, OnItemClickListener listener) {
         this.context = context;
+        this.listener = listener;
     }
 
     public void setData(ArrayList<WordModel> items) {
@@ -57,14 +59,26 @@ public class WordAdapter extends RecyclerView.Adapter<WordAdapter.WordViewHolder
         return 0;
     }
 
-    public static class WordViewHolder extends RecyclerView.ViewHolder {
+    class WordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.textview_word)
         TextView tvWord;
 
-        public WordViewHolder(View itemView) {
+        WordViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            WordModel model = mData.get(position);
+            listener.onItemClick(model);
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(WordModel model);
     }
 }
