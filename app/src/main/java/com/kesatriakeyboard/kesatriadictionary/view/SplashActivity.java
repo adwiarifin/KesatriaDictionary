@@ -1,13 +1,23 @@
 package com.kesatriakeyboard.kesatriadictionary.view;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.kesatriakeyboard.kesatriadictionary.R;
+import com.kesatriakeyboard.kesatriadictionary.database.EnglishHelper;
+import com.kesatriakeyboard.kesatriadictionary.database.IndonesiaHelper;
+import com.kesatriakeyboard.kesatriadictionary.model.WordModel;
 import com.kesatriakeyboard.kesatriadictionary.prefs.AppPreference;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,18 +39,77 @@ public class SplashActivity extends AppCompatActivity {
     private class LoadData extends AsyncTask<Void, Integer, Void>{
 
         final String TAG = LoadData.class.getSimpleName();
-//        MahasiswaHelper mahasiswaHelper;
         AppPreference appPreference;
+        EnglishHelper englishHelper;
+        IndonesiaHelper indonesiaHelper;
         double progress;
         double maxprogress = 100;
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
+            appPreference = new AppPreference(SplashActivity.this);
+            englishHelper = new EnglishHelper(SplashActivity.this);
+            indonesiaHelper = new IndonesiaHelper(SplashActivity.this);
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
+            Boolean firstRun = appPreference.getFirstRun();
+
+            if (firstRun) {
+                ArrayList<WordModel> englishModels = preloadEnglish();
+                ArrayList<WordModel> indonesiaModels = preloadIndonesia();
+
+                progress = 30;
+                publishProgress((int) progress);
+                Double progressMaxInsert = 80.0;
+                Double progressDiff = (progressMaxInsert - progress) / (englishModels.size() + indonesiaModels.size());
+
+                englishHelper.open();
+                englishHelper.beginTransaction();
+                try {
+                    for (WordModel model : englishModels) {
+                        englishHelper.insertTransaction(model);
+                        progress += progressDiff;
+                        publishProgress((int) progress);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "doInBackground: Exception");
+                }
+                englishHelper.setTransactionSuccess();
+                englishHelper.endTransaction();
+                englishHelper.close();
+
+                indonesiaHelper.open();
+                indonesiaHelper.beginTransaction();
+                try {
+                    for (WordModel model : englishModels) {
+                        indonesiaHelper.insertTransaction(model);
+                        progress += progressDiff;
+                        publishProgress((int) progress);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "doInBackground: Exception");
+                }
+                indonesiaHelper.setTransactionSuccess();
+                indonesiaHelper.endTransaction();
+                indonesiaHelper.close();
+
+                appPreference.setFirstRun(false);
+                publishProgress((int) maxprogress);
+            } else {
+                try {
+                    synchronized (this) {
+                        this.wait(2000);
+
+                        publishProgress(50);
+
+                        this.wait(2000);
+                        publishProgress((int) maxprogress);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
             return null;
         }
 
@@ -56,4 +125,55 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    private ArrayList<WordModel> preloadEnglish() {
+        ArrayList<WordModel> englishModels = new ArrayList<>();
+        String line;
+        BufferedReader reader;
+        try {
+            Resources res = getResources();
+            InputStream raw_dict = res.openRawResource(R.raw.english_indonesia);
+
+            reader = new BufferedReader(new InputStreamReader(raw_dict));
+            int count = 0;
+            while ((line = reader.readLine()) != null) {
+                String[] splitstr = line.split("\t");
+
+                WordModel model;
+
+                model = new WordModel(splitstr[0], splitstr[1]);
+                englishModels.add(model);
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return englishModels;
+    }
+
+    private ArrayList<WordModel> preloadIndonesia() {
+        ArrayList<WordModel> indonesiaModels = new ArrayList<>();
+        String line;
+        BufferedReader reader;
+        try {
+            Resources res = getResources();
+            InputStream raw_dict = res.openRawResource(R.raw.indonesia_english);
+
+            reader = new BufferedReader(new InputStreamReader(raw_dict));
+            int count = 0;
+            while ((line = reader.readLine()) != null) {
+                String[] splitstr = line.split("\t");
+
+                WordModel model;
+
+                model = new WordModel(splitstr[0], splitstr[1]);
+                indonesiaModels.add(model);
+                count++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return indonesiaModels;
+    }
+
 }

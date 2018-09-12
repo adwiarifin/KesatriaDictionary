@@ -16,6 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "%s TEXT NOT NULL," +
                     "%s TEXT NOT NULL);",
             DatabaseContract.TABLE_ENGLISH,
+            DatabaseContract.TableColumns._ID,
             DatabaseContract.TableColumns.WORD,
             DatabaseContract.TableColumns.TRANSLATION
     );
@@ -26,11 +27,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "%s TEXT NOT NULL," +
                     "%s TEXT NOT NULL);",
             DatabaseContract.TABLE_INDONESIA,
+            DatabaseContract.TableColumns._ID,
             DatabaseContract.TableColumns.WORD,
             DatabaseContract.TableColumns.TRANSLATION
     );
 
-    public DatabaseHelper(Context context) {
+    DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
