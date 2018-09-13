@@ -98,17 +98,7 @@ public class SplashActivity extends AppCompatActivity {
                 appPreference.setFirstRun(false);
                 publishProgress((int) maxprogress);
             } else {
-                try {
-                    synchronized (this) {
-                        this.wait(2000);
-
-                        publishProgress(50);
-
-                        this.wait(2000);
-                        publishProgress((int) maxprogress);
-                    }
-                } catch (Exception ignored) {
-                }
+                publishProgress((int) maxprogress);
             }
             return null;
         }
