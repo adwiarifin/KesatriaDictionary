@@ -38,7 +38,7 @@ public class EnglishHelper {
     }
 
     public ArrayList<WordModel> getAllData() {
-        Cursor cursor = db.query(TABLE_ENGLISH, null, null, null, null, null, _ID + "ASC", null);
+        Cursor cursor = db.query(TABLE_ENGLISH, null, null, null, null, null, _ID + " ASC", null);
         cursor.moveToFirst();
         ArrayList<WordModel> arrayList = new ArrayList<>();
         WordModel model;
