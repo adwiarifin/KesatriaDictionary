@@ -65,10 +65,7 @@ public class IndonesiaFragment extends Fragment implements WordAdapter.OnItemCli
     public void textChanged() {
         if (!loading) {
             String query = textQuery.getText().toString().trim();
-
-            if (!query.isEmpty()) {
-                new LoadWords().execute(query);
-            }
+            new LoadWords().execute(query);
         }
     }
 
@@ -88,13 +85,16 @@ public class IndonesiaFragment extends Fragment implements WordAdapter.OnItemCli
 
             loading = true;
             indonesiaHelper.open();
-            if (wordModels.size() > 0){
+            if (wordModels.size() > 0) {
                 wordModels.clear();
             }
         }
 
         @Override
         protected ArrayList<WordModel> doInBackground(String... strings) {
+            if (strings[0].isEmpty()) {
+                return indonesiaHelper.getAllData();
+            }
             return indonesiaHelper.getDataByName(strings[0]);
         }
 
@@ -108,13 +108,13 @@ public class IndonesiaFragment extends Fragment implements WordAdapter.OnItemCli
             indonesiaHelper.close();
             loading = false;
 
-            if (words.size() == 0){
+            if (words.size() == 0) {
                 showSnackbarMessage("Tidak ada data saat ini");
             }
         }
     }
 
-    private void showSnackbarMessage(String message){
+    private void showSnackbarMessage(String message) {
         Snackbar.make(rvWord, message, Snackbar.LENGTH_SHORT).show();
     }
 }

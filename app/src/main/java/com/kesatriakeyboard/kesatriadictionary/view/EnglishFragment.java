@@ -65,10 +65,7 @@ public class EnglishFragment extends Fragment implements WordAdapter.OnItemClick
     public void textChanged() {
         if (!loading) {
             String query = textQuery.getText().toString().trim();
-
-            if (!query.isEmpty()) {
-                new LoadWords().execute(query);
-            }
+            new LoadWords().execute(query);
         }
     }
 
@@ -95,6 +92,9 @@ public class EnglishFragment extends Fragment implements WordAdapter.OnItemClick
 
         @Override
         protected ArrayList<WordModel> doInBackground(String... strings) {
+            if (strings[0].isEmpty()) {
+                return englishHelper.getAllData();
+            }
             return englishHelper.getDataByName(strings[0]);
         }
 
