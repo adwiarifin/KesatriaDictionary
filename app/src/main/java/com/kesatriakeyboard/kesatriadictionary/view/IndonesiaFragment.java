@@ -1,9 +1,11 @@
 package com.kesatriakeyboard.kesatriadictionary.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,12 +41,11 @@ public class IndonesiaFragment extends Fragment implements WordAdapter.OnItemCli
     private IndonesiaHelper indonesiaHelper;
 
     public static IndonesiaFragment newInstance() {
-        IndonesiaFragment fragment = new IndonesiaFragment();
-        return fragment;
+        return new IndonesiaFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_indonesia, container, false);
         ButterKnife.bind(this, view);
@@ -57,6 +58,7 @@ public class IndonesiaFragment extends Fragment implements WordAdapter.OnItemCli
 
         wordModels = new ArrayList<>();
         indonesiaHelper = new IndonesiaHelper(context);
+        new LoadWords().execute("");
 
         return view;
     }
@@ -77,6 +79,7 @@ public class IndonesiaFragment extends Fragment implements WordAdapter.OnItemCli
         startActivity(i);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class LoadWords extends AsyncTask<String, Void, ArrayList<WordModel>> {
 
         @Override
