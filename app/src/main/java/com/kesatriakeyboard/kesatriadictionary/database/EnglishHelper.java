@@ -58,7 +58,7 @@ public class EnglishHelper {
     }
 
     public ArrayList<WordModel> getDataByName(String query) {
-        Cursor cursor = db.query(TABLE_ENGLISH, null, WORD + " LIKE ?", new String[]{query + "%"}, null, null, _ID + " ASC", "10");
+        Cursor cursor = db.query(TABLE_ENGLISH, null, WORD + " LIKE ?", new String[]{query + "%"}, null, null, _ID + " ASC", null);
         cursor.moveToFirst();
         ArrayList<WordModel> arrayList = new ArrayList<>();
         WordModel model;
